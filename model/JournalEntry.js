@@ -1,6 +1,6 @@
 import { DataTypes } from "sequelize";
 import { sequelize } from "../database/database.js";
-import User from "./user.js"; 
+import User from "./user.js";
 
 const JournalEntry = sequelize.define(
   "JournalEntry",
@@ -15,8 +15,8 @@ const JournalEntry = sequelize.define(
       type: DataTypes.UUID,
       allowNull: false,
       references: {
-        model: User, 
-        key: "userId", 
+        model: User,
+        key: "userId",
       },
       onDelete: "CASCADE",
     },
@@ -43,6 +43,9 @@ const JournalEntry = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
       defaultValue: "Neutral",
+      validate: {
+        isIn: [["😊 Happy", "😢 Sad", "😡 Angry", "😴 Tired", "😎 Cool", "Neutral"]], // Allowed mood values
+      },
     },
     createdAt: {
       type: DataTypes.DATE,
@@ -55,7 +58,12 @@ const JournalEntry = sequelize.define(
   },
   {
     timestamps: true,
-    tableName: "journal_entries", 
+    tableName: "journal_entries",
+    indexes: [
+      {
+        fields: ["date"], // Index on the date field for faster queries
+      },
+    ],
   }
 );
 
